@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sepalanthaya 2.0</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --bg:#090c16;
+      --card:#111827;
+      --border:rgba(255,255,255,0.08);
+      --gold:#f0c040; 
+      --orange:#ff6b35;
+      --green:#2dce89;
+      --muted:#6b7280;
+      --text:#f3f0eb;
+      --r:16px;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      min-height:100dvh;
+      display:flex;flex-direction:column;align-items:center;
+      padding:28px 16px 50px;
+      opacity:0;transition:opacity .6s ease;
+    }
+    body.on{opacity:1}
+
+    /* top chip */
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);
+      border-radius:100px;padding:5px 14px;
+      font-size:.7rem;font-weight:700;letter-spacing:.08em;
+      color:var(--gold);text-transform:uppercase;margin-bottom:22px;
+    }
+    .chip-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+    /* card */
+    .card{
+      width:100%;max-width:420px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:26px 22px 28px;
+      box-shadow:0 20px 60px rgba(0,0,0,.4);
+    }
+
+    .card-title{font-size:1.35rem;font-weight:800;line-height:1.2;margin-bottom:6px;letter-spacing:-.02em}
+    .card-title span{background:linear-gradient(90deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .card-sub{font-size:.85rem;color:var(--muted);margin-bottom:22px;line-height:1.5}
+
+    /* steps */
+    .steps{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+    .step{
+      display:flex;align-items:flex-start;gap:11px;
+      padding:11px 13px;border-radius:12px;
+      background:rgba(255,255,255,.025);border:1px solid var(--border);
+      transition:background .25s,border-color .25s;
+    }
+    .step.active{background:rgba(240,192,64,.06);border-color:rgba(240,192,64,.2)}
+    .step.done{background:rgba(45,206,137,.05);border-color:rgba(45,206,137,.18)}
+    .step-num{
+      width:26px;height:26px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.75rem;font-weight:800;
+      background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);
+      transition:all .3s;
+    }
+    .step.active .step-num{background:linear-gradient(135deg,var(--gold),var(--orange));border-color:transparent;color:#000}
+    .step.done .step-num{background:var(--green);border-color:transparent;color:#fff}
+    .step-body{font-size:.82rem;line-height:1.5;padding-top:3px}
+    .step-body strong{color:var(--text)}
+    .step-body small{color:var(--muted);font-size:.77rem}
+
+    /* buttons */
+    .btn{
+      width:100%;padding:15px 20px;border:none;border-radius:var(--r);
+      font-size:.95rem;font-weight:800;cursor:pointer;letter-spacing:.01em;
+      display:flex;align-items:center;justify-content:center;gap:9px;
+      transition:transform .18s,box-shadow .18s,opacity .2s;
+      position:relative;overflow:hidden;
+    }
+    .btn:active{transform:scale(.97)}
+    .btn-watch{
+      background:linear-gradient(135deg,var(--gold),var(--orange));
+      color:#0a0a0a;box-shadow:0 6px 24px rgba(240,192,64,.28);
+    }
+    .btn-watch:hover:not(.off){transform:translateY(-2px);box-shadow:0 10px 32px rgba(240,192,64,.4)}
+    .btn-watch.off{opacity:.4;cursor:not-allowed;pointer-events:none}
+    .btn-watch .shine{
+      position:absolute;top:0;left:-100%;width:55%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+      animation:shine 2.8s infinite;
+    }
+    @keyframes shine{to{left:160%}}
+    .btn-go{
+      background:linear-gradient(135deg,#163a2d,#1e5c3a);
+      color:#fff;border:1px solid rgba(45,206,137,.28);
+      box-shadow:0 6px 24px rgba(45,206,137,.15);
+      display:none;margin-top:12px;
+    }
+    .btn-go:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(45,206,137,.28)}
+
+    /* status */
+    .status{
+      width:100%;max-width:420px;margin-top:14px;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:13px;padding:13px 16px;
+      display:flex;align-items:center;gap:10px;
+      font-size:.84rem;
+      opacity:0;transform:translateY(6px);
+      transition:opacity .35s,transform .35s;
+    }
+    .status.on{opacity:1;transform:translateY(0)}
+    .status-ico{font-size:1.1rem;flex-shrink:0}
+
+    /* progress strip */
+    .prog{
+      width:100%;max-width:420px;margin-top:12px;
+      display:none;flex-direction:column;gap:5px;
+    }
+    .prog.on{display:flex}
+    .prog-label{font-size:.74rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+    .prog-track{width:100%;height:4px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+    .prog-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--orange));transition:width .7s linear}
+
+    .note{margin-top:26px;font-size:.72rem;color:var(--muted);text-align:center;line-height:1.7}
+
+    /* pop anim for green btn */
+    @keyframes pop{from{transform:scale(.82);opacity:0}70%{transform:scale(1.03)}to{transform:scale(1);opacity:1}}
+    .pop{animation:pop .35s ease forwards}
+  </style>
+</head>
+<body>
+
+<div class="chip"><div class="chip-dot"></div>Sepalanthaya 2.0</div>
+
+<div class="card">
+  <h1 class="card-title">Unlock the <span>Video</span></h1>
+  <p class="card-sub">Follow the steps below to access your content. You must stay on the sponsor page for <strong style="color:var(--gold)">10–15 seconds</strong> to unlock the video.</p>
+
+  <div class="steps">
+    <div class="step active" id="s1">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Tap "Watch Video"</strong><br><small>Opens a short sponsor page.</small></div>
+    </div>
+    <div class="step" id="s2">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Stay for 10–15 seconds</strong><br><small>Don't close or skip the page early.</small></div>
+    </div>
+    <div class="step" id="s3">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Come back &amp; tap Continue</strong><br><small>Green button unlocks your video.</small></div>
+    </div>
+  </div>
+
+  <button class="btn btn-watch off" id="watchBtn">
+    <div class="shine"></div>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    Watch Video
+  </button>
+
+  <button class="btn btn-go" id="goBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    Continue to Video
+  </button>
+</div>
+
+<div class="status" id="statusBar">
+  <div class="status-ico" id="sIco">⏳</div>
+  <div id="sTxt"></div>
+</div>
+
+<div class="prog" id="progBar">
+  <div class="prog-label" id="progLabel"></div>
+  <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+</div>
+
+<p class="note">Stay on the sponsor page for <strong>10–15 seconds</strong> before coming back.</p>
+
+<script src="obfuscatedMap.js"></script>
+<script>
+/* ════════════════════════════════
+   AD LINKS — add as many as needed
+   ════════════════════════════════ */
+const ADS = [
+  "https://lasereither.com/i1ikw042zk?key=57a7d42043f8b360bd9d5d01c8adbd4c",
+  "https://lasereither.com/u70cfm85?key=f727f93ea54399f15bdc4281509e964f",
+  "https://lasereither.com/pgp00wh4r?key=fb93d9a58f44c4560a024448bda11905",
+  "https://lasereither.com/b61f7zh5c?key=4de66d551bb94b8516349d9410507a8d",
+  "https://lasereither.com/jzsn5hu885?key=d382e972f8c66e23c78bb20fd1755c46",
+];
+const REQUIRED_SEC = 10;
+
+/* ── Safe localStorage helpers (fixes iOS private mode crash) ── */
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) {} }
+function lsGet(k)    { try { return localStorage.getItem(k); } catch(e) { return null; } }
+function lsDel(k)    { try { localStorage.removeItem(k); } catch(e) {} }
+
+
+/* ── Video code ── */
+const rawParam = new URLSearchParams(location.search).get('p');
+// Resolve: short obfuscated key → real Telegram file ID
+// If not in map, use the raw param directly (direct Telegram ID support)
+const code = rawParam ? (obfuscatedMap[rawParam] || rawParam) : null;
+if (!code) {
+  document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#6b7280">⚠️ No video code provided.</p>';
+}
+
+/* ── DOM ── */
+const watchBtn  = document.getElementById('watchBtn');
+const goBtn     = document.getElementById('goBtn');
+const statusBar = document.getElementById('statusBar');
+const sIco      = document.getElementById('sIco');
+const sTxt      = document.getElementById('sTxt');
+const progBar   = document.getElementById('progBar');
+const progFill  = document.getElementById('progFill');
+const progLabel = document.getElementById('progLabel');
+const s1 = document.getElementById('s1');
+const s2 = document.getElementById('s2');
+const s3 = document.getElementById('s3');
+
+/* ════════════════════════════════
+   STATE FLAGS
+   unlocked = green button is showing
+   adPending = user clicked Watch Video
+              and went to ad page
+   ════════════════════════════════ */
+let unlocked   = false;  // true once green button is revealed
+let adPending  = false;  // true after Watch Video clicked, before return
+
+/* ════════════════════════════════
+   SILENT BOT PROTECTION
+   ════════════════════════════════ */
+let score   = 0;
+let blocked = false;
+
+const onMove = (() => {
+  let moves = 0;
+  return () => { if (++moves >= 2) { score++; botCheck(); } };
+})();
+window.addEventListener('mousemove',  onMove, {passive:true});
+window.addEventListener('touchmove',  onMove, {passive:true});
+
+/* Time signal */
+setTimeout(() => { score++; botCheck(); }, 1500);
+
+/* Scroll signal */
+window.addEventListener('scroll', () => { score++; botCheck(); }, {passive:true, once:true});
+
+/* Instant bot flags */
+if (navigator.webdriver) blocked = true;
+if (/headless|phantom|selenium|puppeteer|playwright/i.test(navigator.userAgent)) blocked = true;
+
+function botCheck() {
+  if (blocked || unlocked || adPending) return;
+  if (score >= 2) enableWatchBtn();
+}
+
+/* Mobile: first touch counts as strong human signal.
+   IMPORTANT: only fires enableWatchBtn — never shows
+   "Watch Video" status if already unlocked. */
+document.addEventListener('touchstart', () => {
+  score += 3;
+  botCheck();
+}, {passive:true, once:true});
+
+function enableWatchBtn() {
+  if (unlocked || adPending) return;   // don't override green-button state
+  watchBtn.classList.remove('off');
+  setStatus('👆', 'Tap <strong>Watch Video</strong> to continue.');
+  showStatus();
+}
+
+/* ── Page init ── */
+window.addEventListener('load', () => {
+  document.body.classList.add('on');
+});
+
+/* pageshow fires on both fresh load AND bfcache back-navigation.
+   We only call checkReturn() here — resetUI only happens
+   when there is nothing to restore. */
+window.addEventListener('pageshow', (e) => {
+  const t   = lsGet('adt');
+  const v   = lsGet('adv');
+  const hasAdData = t && v === '1';
+
+  if (hasAdData) {
+    /* User is returning from ad page */
+    adPending = false;
+    checkReturn();
+  } else if (!unlocked) {
+    /* Fresh load or no pending ad — reset to default state */
+    resetUI();
+  }
+  /* If already unlocked (e.g. bfcache back after unlock) — do nothing */
+});
+
+/* ── Watch button ── */
+watchBtn.addEventListener('click', () => {
+  if (watchBtn.classList.contains('off') || blocked) return;
+  if (navigator.webdriver) return;
+
+  adPending = true;
+
+  markDone(s1); markActive(s2);
+
+  lsSet('adt', Date.now());
+  lsSet('adv', '1');
+
+  location.href = ADS[Math.floor(Math.random() * ADS.length)];
+});
+
+/* ── Check if user returned after visiting ad ── */
+function checkReturn() {
+  const t = lsGet('adt');
+  const v = lsGet('adv');
+  if (!t || v !== '1') return;
+
+  const spent = Math.floor((Date.now() - Number(t)) / 1000);
+
+  if (spent >= REQUIRED_SEC) {
+    lsSet('adv', '0');
+    lsDel('adt');
+    showUnlocked();
+  } else {
+    const left = REQUIRED_SEC - spent;
+    lsSet('adv', '0');
+    const pct = Math.round((spent / REQUIRED_SEC) * 100);
+    showProg(pct, `Only ${spent}s of ${REQUIRED_SEC}s — ${left}s short`);
+    setTimeout(() => {
+      progBar.classList.remove('on');
+      setStatus('⚠️', `You only stayed <strong>${spent} second${spent===1?'':'s'}</strong>. You must stay on the sponsor page for <strong>10–15 seconds</strong>. Please try again.`);
+      showStatus();
+      /* Re-enable Watch button so user can try again */
+      watchBtn.style.display = 'flex';
+      goBtn.style.display    = 'none';
+      watchBtn.classList.remove('off');
+    }, 1100);
+  }
+}
+
+/* ── Unlock green button ── */
+function showUnlocked() {
+  unlocked = true;
+  adPending = false;
+  markDone(s1); markDone(s2); markActive(s3);
+  watchBtn.style.display = 'none';
+  goBtn.style.display    = 'flex';
+  goBtn.classList.add('pop');
+  setStatus('✅', '<strong>Unlocked!</strong> Tap below to watch your video.');
+  showStatus();
+  setTimeout(() => goBtn.scrollIntoView({behavior:'smooth', block:'nearest'}), 200);
+}
+
+/* ── Continue ── */
+goBtn.addEventListener('click', () => {
+  location.href = `https://t.me/sepalanthaya_bot?start=${code}`;
+});
+
+/* ── Helpers ── */
+function resetUI() {
+  unlocked  = false;
+  adPending = false;
+  goBtn.style.display    = 'none';
+  watchBtn.style.display = 'flex';
+  statusBar.classList.remove('on');
+  progBar.classList.remove('on');
+}
+function setStatus(ico, html) { sIco.textContent = ico; sTxt.innerHTML = html; }
+function showStatus()         { statusBar.classList.add('on'); }
+function showProg(pct, label) {
+  progBar.classList.add('on');
+  progLabel.textContent = label;
+  setTimeout(() => { progFill.style.width = pct + '%'; }, 60);
+}
+function markDone(el) {
+  el.classList.remove('active'); el.classList.add('done');
+  el.querySelector('.step-num').textContent = '✓';
+}
+function markActive(el) { el.classList.add('active'); }
+</script>
+</body>
+</html>

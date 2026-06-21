@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Manager (Fresh Build)</title>
+<style>
+  body { background: #1a1a2e; color: #cbd5e1; font-family: system-ui, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+  h2 { color: #38bdf8; margin-top: 0; }
+  .card { background: #0f172a; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #334155; }
+  input { width: 100%; box-sizing: border-box; padding: 10px; margin: 8px 0 16px; background: #1e293b; border: 1px solid #475569; color: white; border-radius: 4px; font-family: monospace; }
+  button { background: #3b82f6; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 4px; font-weight: bold; width: 100%; margin-bottom: 10px; }
+  button:hover { background: #2563eb; }
+  .btn-green { background: #10b981; }
+  .btn-green:hover { background: #059669; }
+  #console { background: #000; color: #10b981; padding: 15px; font-family: monospace; height: 180px; overflow-y: auto; font-size: 13px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #334155; }
+  .err { color: #ef4444; }
+  .warn { color: #f59e0b; }
+</style>
+</head>
+<body>
+
+<h2>Video Manager</h2>
+
+<!-- THE MOST IMPORTANT PART: The live log console -->
+<div id="console">System Ready...<br></div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Step 1: Setup GitHub</h3>
+  <label>GitHub Username</label>
+  <input id="u" placeholder="e.g. john">
+  <label>Repository Name</label>
+  <input id="r" placeholder="e.g. playhub">
+  <label>GitHub Personal Access Token</label>
+  <input id="t" type="password" placeholder="ghp_...">
+  <label>Landing Page URL</label>
+  <input id="d" placeholder="https://my.github.io/playhub">
+
+  <button onclick="saveAndTest()">Save & Test Connection</button>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Step 2: Add New Video</h3>
+  <label>Telegram File ID (paste the code after ?start=)</label>
+  <input id="fid" placeholder="BQADAQAD...">
+  <button class="btn-green" onclick="generate()">Generate URL & Push to GitHub</button>
+</div>
+
+<div class="card" id="resCard" style="display:none; border-color: #10b981; background: #064e3b;">
+  <h3 style="color: #34d399; margin-top:0;">✅ Short URL Ready:</h3>
+  <input id="resUrl" readonly style="font-size: 16px; font-weight: bold; color: white; background: #022c22; border: 1px solid #10b981; cursor: pointer;" onclick="this.select(); document.execCommand('copy'); log('URL copied to clipboard!');">
+  <p style="font-size: 12px; color: #6ee7b7; margin: 0;">Click the URL above to copy it.</p>
+</div>
+
+<script>
+  // 1. Logging System (Catches everything)
+  function log(msg, type='info') {
+    const c = document.getElementById('console');
+    const time = new Date().toLocaleTimeString().split(' ')[0];
+    let cls = '';
+    if(type === 'err') cls = 'err';
+    if(type === 'warn') cls = 'warn';
+    c.innerHTML += `<div class="${cls}">[${time}] > ${msg}</div>`;
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // Catch global errors so the screen never stays blank
+  window.onerror = function(msg, url, line) { 
+    log("SYS ERROR: " + msg + " (line " + line + ")", 'err'); 
+    return false;
+  };
+
+  // 2. Storage
+  function loadCfg() { try { return JSON.parse(localStorage.getItem('vm_cfg_new')) || {}; } catch(e) { return {}; } }
+  function saveCfg(c) { localStorage.setItem('vm_cfg_new', JSON.stringify(c)); }
+  function loadMap() { try { return JSON.parse(localStorage.getItem('vm_map_new')) || {}; } catch(e) { return {}; } }
+  function saveMap(m) { localStorage.setItem('vm_map_new', JSON.stringify(m)); }
+
+  // 3. Init Page
+  window.onload = function() {
+    log("Page loaded successfully.");
+    const cfg = loadCfg();
+    if(cfg.u) document.getElementById('u').value = cfg.u;
+    if(cfg.r) document.getElementById('r').value = cfg.r;
+    if(cfg.t) document.getElementById('t').value = cfg.t;
+    if(cfg.d) document.getElementById('d').value = cfg.d;
+    if(cfg.u) log("Restored saved settings.");
+  };
+
+  // 4. Test Connection
+  async function saveAndTest() {
+    const c = {
+      u: document.getElementById('u').value.trim(),
+      r: document.getElementById('r').value.trim(),
+      t: document.getElementById('t').value.trim(),
+      d: document.getElementById('d').value.trim().replace(/\/$/, '')
+    };
+
+    if(!c.u || !c.r || !c.t || !c.d) { 
+      log("Missing fields! Please fill all 4 boxes.", 'err'); 
+      return; 
+    }
+
+    saveCfg(c);
+    log("Settings saved.");
+    log("Testing API connection to GitHub...");
+
+    try {
+      const res = await fetch(`https://api.github.com/repos/${c.u}/${c.r}`, {
+        headers: { Authorization: `token ${c.t}` }
+      });
+      const data = await res.json();
+
+      if(res.ok) {
+        log(`✅ Success! Connected to repo: ${data.full_name}`);
+      } else {
+        log(`❌ GitHub Auth Error: ${data.message}`, 'err');
+        if(data.message.includes('Bad credentials')) log("Hint: Your token is invalid or expired.", 'warn');
+        if(data.message.includes('Not Found')) log("Hint: Repo not found. Check username and repo name.", 'warn');
+      }
+    } catch(e) {
+      log(`❌ Network Error: ${e.message}`, 'err');
+    }
+  }
+
+  function rand() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let res = '';
+    for(let i=0; i<6; i++) res += chars[Math.floor(Math.random() * chars.length)];
+    return res;
+  }
+
+  // 5. Generate and Push
+  async function generate() {
+    const c = loadCfg();
+    const fid = document.getElementById('fid').value.trim();
+
+    if(!c.u || !c.t) { log("Please Test Connection first.", 'err'); return; }
+    if(!fid) { log("Please paste a File ID.", 'err'); return; }
+
+    log("Generating short code...");
+    const map = loadMap();
+
+    // Check if ID already exists
+    let code = Object.keys(map).find(k => map[k] === fid);
+    if(code) {
+      log(`Found existing code for this file: ${code}`, 'warn');
+    } else {
+      do { code = rand(); } while (map[code]);
+      map[code] = fid;
+      saveMap(map);
+      log(`Generated new short code: ${code}`);
+    }
+
+    // Show result instantly
+    const url = c.d + '/?p=' + code;
+    document.getElementById('resUrl').value = url;
+    document.getElementById('resCard').style.display = 'block';
+
+    // Push
+    await pushToGitHub(c, map);
+  }
+
+  // 6. Push Logic
+  async function pushToGitHub(c, map) {
+    log("Preparing GitHub push...");
+
+    const entries = Object.keys(map).map(k => `  "${k}": "${map[k]}"`).join(',\n');
+    const content = `const obfuscatedMap = {\n${entries}\n};`;
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+    const url = `https://api.github.com/repos/${c.u}/${c.r}/contents/obfuscatedMap.js`;
+
+    try {
+      log("Checking if obfuscatedMap.js exists...");
+      let sha = null;
+      const getRes = await fetch(url, { headers: { Authorization: `token ${c.t}` } });
+
+      if(getRes.ok) {
+        const getData = await getRes.json();
+        sha = getData.sha;
+        log("File exists. Updating...");
+      } else {
+        log("File not found. Creating...");
+      }
+
+      const body = { message: "Update video map (Video Manager)", content: encoded };
+      if(sha) body.sha = sha;
+
+      log("Sending data to GitHub API...");
+      const putRes = await fetch(url, {
+        method: 'PUT',
+        headers: { Authorization: `token ${c.t}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if(putRes.ok) {
+        log("✅ PUSH SUCCESS! Map updated.", 'info');
+        log("Wait ~30 seconds for GitHub Pages to deploy.", 'warn');
+      } else {
+        const putData = await putRes.json();
+        log("❌ PUSH FAILED: " + putData.message, 'err');
+      }
+    } catch(e) {
+      log("❌ PUSH ERROR: " + e.message, 'err');
+    }
+  }
+</script>
+</body>
+</html>
