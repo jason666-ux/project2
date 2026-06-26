@@ -32,5 +32,6 @@ const obfuscatedMap = {
   "ftzzk3": "BQADAQADDAwAAn6v8UXA4j-gcZbhyxYE",
   "9k4e67": "BQADAQADFwwAAn6v8UU48qgZZG9BQRYE",
   "9lkm8z": "BQADAQADIAwAAn6v8UUeTPq9cxtCaBYE",
-  "78xp56": "BQADAQAD6hEAAn6v-UVYVa_svdlWshYE"
+  "78xp56": "BQADAQAD6hEAAn6v-UVYVa_svdlWshYE",
+  "vt3iya": "BQADAQADAhIAAn6v-UUp0SacyCSzmRYE"
 };
