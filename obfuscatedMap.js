@@ -45,5 +45,6 @@ const obfuscatedMap = {
   "cgtu90": "BQADAQADfwkAAh50CEap09wkDtRuEhYE",
   "cjtlnj": "BQADAQADkAkAAh50CEYBU7gznS-R4hYE",
   "lg0ied": "BQADAQADOhcAAh50CEZWUG5qNcOCbBYE",
-  "s8p338": "BQADAQADbRcAAh50CEYygp8ZyxYq2xYE"
+  "s8p338": "BQADAQADbRcAAh50CEYygp8ZyxYq2xYE",
+  "04cxk8": "BQADAQAD7wkAAmXlCEbTCLQZod6y5RYE"
 };
