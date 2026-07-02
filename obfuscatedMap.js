@@ -61,5 +61,6 @@ const obfuscatedMap = {
   "cbib3s": "BQADAQADKRAAArFaIUaGjw65lYiySxYE",
   "nscsro": "BQADAQAD0AkAArFaKUa8RDSGortamBYE",
   "h5t915": "BQADAQADFgoAArFaKUaImDKyyFYjnRYE",
-  "78x95u": "BQADAQADLQgAAghnKUaPG2rdE972MhYE"
+  "78x95u": "BQADAQADLQgAAghnKUaPG2rdE972MhYE",
+  "o3rka2": "BQADAQADXQYAAghnMUaZfYq0-IKh9BYE"
 };
