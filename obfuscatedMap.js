@@ -66,5 +66,6 @@ const obfuscatedMap = {
   "r3synz": "BQADAQADFg8AAghnMUZ5vd-IdubQPRYE",
   "4tt8lp": "BQADAQADEAoAAghnOUayVveSnN0B0BYE",
   "uboiyd": "BQADAQADHgoAAghnOUY69nuB8PvOqBYE",
-  "2jwlst": "BQADAQADDgwAAghnOUZQsnnTZX_t1hYE"
+  "2jwlst": "BQADAQADDgwAAghnOUZQsnnTZX_t1hYE",
+  "oskxdz": "BQADAQADfwsAAq-EQEYc2W6g6dW-ZxYE"
 };
