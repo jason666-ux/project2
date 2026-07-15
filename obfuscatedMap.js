@@ -141,5 +141,6 @@ const obfuscatedMap = {
   "dyvb7k": "BQADAQADqwsAAjMruEaxjaDlLJiTExYE",
   "5o2v4l": "BQADAQAD7gsAAjMruEZiXpuK0d61SRYE",
   "qgoeco": "BQADAQAD5RUAAjMruEaT3Rcp5cmbLxYE",
-  "ieo0cl": "BQADAQADCRYAAjMruEYInnNwrL-kzxYE"
+  "ieo0cl": "BQADAQADCRYAAjMruEYInnNwrL-kzxYE",
+  "yujs96": "BQADAQADNBYAAjMruEbGBbBjVWhAQRYE"
 };
