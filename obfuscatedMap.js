@@ -178,5 +178,6 @@ const obfuscatedMap = {
   "ta8plc": "BQADAQADvw8AApSw6EbW_MogPIG8lRYE",
   "d3vkhg": "BQADAQADzAoAAvCw8UZUZe0qPNLmnRYE",
   "lisse2": "BQADAQADEAsAAvCw8UYoDE_FlQ5lUxYE",
-  "tp3v5m": "BQADAQADJgsAAvCw8Ubr9e0RbP3EmRYE"
+  "tp3v5m": "BQADAQADJgsAAvCw8Ubr9e0RbP3EmRYE",
+  "ykrf6q": "BQADAQADOQsAAvCw8UbJA4b2_jdbXxYE"
 };
