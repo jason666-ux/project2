@@ -204,5 +204,6 @@ const obfuscatedMap = {
   "wxyegr": "BQADAQADyQwAAjO-IUdH390Fa4Bb9xYE",
   "dldqwj": "BQADAQADFhUAAjO-KUfkrJ_B5g7tZRYE",
   "pb57sw": "BQADAQADLBUAAjO-KUeJliVXcJuyYRYE",
-  "jvc75r": "BQADAQADQRUAAjO-KUeExNZjR3pJ2RYE"
+  "jvc75r": "BQADAQADQRUAAjO-KUeExNZjR3pJ2RYE",
+  "wng2bg": "BQADAQADjRUAAjO-KUe18oOVrfzgghYE"
 };
