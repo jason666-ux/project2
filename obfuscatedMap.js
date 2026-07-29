@@ -212,5 +212,6 @@ const obfuscatedMap = {
   "eaplwn": "BQADAQAD8xAAAgjCQUdQ3SaRTxBPXBYE",
   "i2ms62": "BQADAQADDxEAAgjCQUdfLJijBbx6fBYE",
   "wwbcbl": "BQADAQADOBEAAgjCQUe8PS5Ys5HBCBYE",
-  "h3wk6m": "BQADAQADiAgAAgjCUUdsuTy2INcAAZMWBA"
+  "h3wk6m": "BQADAQADiAgAAgjCUUdsuTy2INcAAZMWBA",
+  "j70kor": "BQADAQAD_QgAAgjCUUeF5HnpgWTLghYE"
 };
