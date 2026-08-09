@@ -239,5 +239,6 @@ const obfuscatedMap = {
   "jwfrur": "BQADAQADaQ0AAuWMmUckDV5YQgfyPxYE",
   "94ox1q": "BQADAQADwA8AAgFoqUcmr5-o6Q3xPhYE",
   "k4goli": "BQADAQADxg8AAgFoqUcDQD31dt7DQBYE",
-  "oxvhuz": "BQADAQAD1w8AAgFoqUcVaX1GnyFY_xYE"
+  "oxvhuz": "BQADAQAD1w8AAgFoqUcVaX1GnyFY_xYE",
+  "vbdet0": "BQADAQADdwkAAsFEwUc2mA93rlHJxRYE"
 };
