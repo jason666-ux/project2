@@ -305,5 +305,6 @@ const obfuscatedMap = {
   "tyb0rn": "BQADAQADxRAAAtctOEXtHH1YbEddsBYE",
   "uvzm6v": "BQADAQAD3RAAAtctOEVge_L1nisQsBYE",
   "499hvn": "BQADAQAD7hAAAtctOEXTcsigirrtvhYE",
-  "k9s8j4": "BQADAQADbBUAAuWAQEXER3SgemYYGRYE"
+  "k9s8j4": "BQADAQADbBUAAuWAQEXER3SgemYYGRYE",
+  "yeg6tx": "BQADAQADexUAAuWAQEWDVtpYGkEOcBYE"
 };
